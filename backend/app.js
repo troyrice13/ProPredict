@@ -54,11 +54,11 @@ async function fetchAndStorePlayers() {
             for (const position of team.positions) {
                 for (const player of position.players) {
                     const playerData = {
-                        _id: player.id,  // Use the player's ID as the MongoDB document _id
+                        _id: player.id,
                         full_name: player.full_name,
                     };
 
-                    // Upsert player into the MongoDB collection
+                   
                     await playersCollection.updateOne(
                         { _id: player.id },
                         { $set: playerData },
@@ -77,7 +77,7 @@ async function fetchAndStorePlayers() {
 // Route to get all players
 app.get('/api/players', async (req, res) => {
     try {
-        const players = await playersCollection.find({}).toArray();  // Fetch all players from the MongoDB collection
+        const players = await playersCollection.find({}).toArray();
         res.json(players);
     } catch (error) {
         console.error('Error fetching players:', error);
@@ -85,7 +85,6 @@ app.get('/api/players', async (req, res) => {
     }
 });
 
-// Route to get player stats by ID
 app.get('/api/player/:id', async (req, res) => {
     const playerId = req.params.id;
     try {
@@ -97,5 +96,4 @@ app.get('/api/player/:id', async (req, res) => {
     }
 });
 
-// Initialize MongoDB connection and start the server
 connectToMongoDB().then(fetchAndStorePlayers);

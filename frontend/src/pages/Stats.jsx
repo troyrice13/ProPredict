@@ -3,7 +3,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 
 export default function Stats() {
-    const { id: playerId } = useParams();  // Get playerId from URL
+    const { id: playerId } = useParams();  
     const [playerData, setPlayerData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -12,7 +12,7 @@ export default function Stats() {
         if (playerId) {
             axios.get(`http://localhost:5000/api/player/${playerId}`)
                 .then(res => {
-                    setPlayerData(res.data.player);  // Access the nested player data
+                    setPlayerData(res.data.player);  
                     setLoading(false);
                 })
                 .catch(err => {
@@ -41,7 +41,6 @@ export default function Stats() {
                     <p>Position: {playerData.primary_position}</p>
                     <p>Bat Hand: {playerData.bat_hand}</p>
                     <p>Jersey Number: {playerData.jersey_number}</p>
-                    {/* Add more player details as needed */}
                 </div>
             ) : (
                 <p>No player data found</p>
