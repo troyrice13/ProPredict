@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const { MongoClient, ServerApiVersion } = require('mongodb')
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const axios = require('axios');
 
 
 dotenv.config();
@@ -35,20 +36,18 @@ async function run() {
             console.log(`Server running on port ${PORT}`)
         })
 
-        app.get('/api/test-db', async (req, res) => {
+        app.get('/api/player/:id', async (req, res) => {
+            const apiKey = process.env.SPORTRADAR_API_KEY;
+            const playerId = req.params.id
+        
             try {
-                const database = client.db('Cluster-1');  // Specify your database name here
-                const collection = database.collection('players');  // We will create this collection dynamically
-        
-                // Insert a test document
-                const testDocument = { name: 'Test Player', team: 'Test Team' };
-                const result = await collection.insertOne(testDocument);
-        
-                res.json({ message: 'Connected to MongoDB and inserted a test document!', data: result });
+                const response = await axios.get(`https://api.sportradar.com/mlb/trial/v7/en/players/${playerId}/profile.json?api_key=${apiKey}`);
+                res.json(response.data);
             } catch (error) {
-                res.status(500).json({ error: 'Error connecting to MongoDB', details: error });
+                res.status(500).json({ message: 'Error fetching player data', error: error.message });
             }
         });
+        
     } catch (err) {
         console.error("MongoBD connection error: ", err);
         process.exit(1)
