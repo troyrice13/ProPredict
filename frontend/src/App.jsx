@@ -3,13 +3,15 @@ import { Routes, Route } from 'react-router-dom';
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css';
-import PlayerStats from './components/PlayerStats';
+import Stats from './pages/Stats';
+import Players from './pages/Players';
 
 function App() {
 
   return (
     <Routes>
-      <Route path="/stats/:id" element={<PlayerStats />} />
+      <Route path="/stats/:id" element={<Stats />} />
+      <Route path="/players" element={<Players />} />
     </Routes>
   )
 }

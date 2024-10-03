@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
-export default function PlayerStats() {
+export default function Stats() {
     const { id: playerId } = useParams();  // Get playerId from URL
     const [playerData, setPlayerData] = useState(null);
     const [loading, setLoading] = useState(true);
