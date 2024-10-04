@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Routes, Route, useNavigate } from 'react-router-dom';
-import PlayerStats from './Stats';
+import { useNavigate } from 'react-router-dom';
 
-function App() {
+function Players() {
   const [players, setPlayers] = useState([]);
   const navigate = useNavigate();
 
@@ -34,12 +33,8 @@ function App() {
           </li>
         ))}
       </ul>
-
-      <Routes>
-        <Route path="/stats/:id" element={<PlayerStats />} />  
-      </Routes>
     </div>
   );
 }
 
-export default App;
+export default Players;

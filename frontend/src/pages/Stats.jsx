@@ -12,7 +12,7 @@ export default function Stats() {
         if (playerId) {
             axios.get(`http://localhost:5000/api/player/${playerId}`)
                 .then(res => {
-                    setPlayerData(res.data);  // Get the entire player response
+                    setPlayerData(res.data);
                     setLoading(false);
                 })
                 .catch(err => {
@@ -31,18 +31,14 @@ export default function Stats() {
         return <p>{error}</p>;
     }
 
-    // Get player bio and filter for regular season (REG) stats
-    const playerInfo = playerData?.stats?.player || {};
+    const playerInfo = playerData?.playerInfo || {};
     const teamInfo = playerInfo.team || {};
-    
-    // Filter out regular season stats from the `seasons` array
-    const regularSeason = playerData?.stats?.player?.seasons?.find(season => season.type === "REG") || {};
-    const hittingStats = regularSeason?.totals?.statistics?.hitting?.overall || {};
+    const hittingStats = playerData?.playerStats?.stats?.statistics?.hitting?.overall || {};
 
     return (
         <div>
             <h1>Player Stats</h1>
-            {playerInfo && playerData ? (
+            {playerInfo ? (
                 <div>
                     <h2>{playerInfo.full_name || 'N/A'}</h2>
                     <p>Team: {teamInfo.name || 'N/A'}</p>
@@ -57,9 +53,10 @@ export default function Stats() {
                     <p>Home Runs (HR): {hittingStats.onbase?.hr || 'N/A'}</p>
                     <p>RBIs: {hittingStats.rbi || 'N/A'}</p>
                     <p>Batting Average (AVG): {hittingStats.avg || 'N/A'}</p>
+                    <p>On-base plus Slugging (OPS): {hittingStats.ops || 'N/A'}</p>
 
                     <h3>Next Game Prediction</h3>
-                    <p>Next Game Prediction: {playerData.projection || 'N/A'}</p>
+                    <p>Next Game Prediction: {playerInfo.projection || 'N/A'}</p>
                 </div>
             ) : (
                 <p>No player data found</p>

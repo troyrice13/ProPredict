@@ -1,5 +1,6 @@
 const axios = require('axios');  // Import axios
 const Player = require('../classes/Player');
+const Season = require('../classes/Season')
 const dotenv = require('dotenv');
 const path = require('path');
 
@@ -24,26 +25,31 @@ async function fetchDataWithRetry(url, retries = 5, backoff = 3000) {
 }
 
 // Fetch and store stats for all players, but don't fetch player list again
-async function fetchAndStorePlayers(playersCollection) {
+async function fetchAndStorePlayers(playersCollection, seasonsCollection) {
     try {
-        const players = await playersCollection.find({}).toArray();  // Fetch players from MongoDB
+        const players = await playersCollection.find({}).toArray();
 
         for (const playerData of players) {
             const player = new Player(playerData);
+            await player.save(playersCollection);
 
-            // Check if player data needs updating (based on TTL or other conditions)
-            const existingPlayer = await playersCollection.findOne({ _id: player.id });
-            const oneDay = 24 * 60 * 60 * 1000;  // Update if more than 24 hours have passed
+            // Fetch current season stats
+            const response = await fetchDataWithRetry(`https://api.sportradar.com/mlb/trial/v7/en/players/${player.id}/profile.json?api_key=${apiKey}`);
+            const currentSeason = response.data.seasons.find(season => season.year === new Date().getFullYear() && season.type === 'REG');
 
-            if (existingPlayer && (Date.now() - new Date(existingPlayer.lastUpdated)) < oneDay) {
-                console.log(`Player ${player.full_name} stats are up-to-date.`);
-                continue;
+            if (currentSeason) {
+                const season = new Season({
+                    playerId: player.id,
+                    year: currentSeason.year,
+                    type: currentSeason.type,
+                    stats: currentSeason.totals,
+                    lastUpdated: new Date()
+                });
+                await season.save(seasonsCollection);
             }
-
-            await player.fetchStats(apiKey, playersCollection);  // Fetch live stats for the player and update MongoDB
         }
 
-        console.log('All player stats updated in MongoDB.');
+        console.log('All player data and current season stats updated in MongoDB.');
     } catch (err) {
         console.error("Error fetching and storing player data", err);
     }

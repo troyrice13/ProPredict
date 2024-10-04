@@ -26,6 +26,7 @@ const client = new MongoClient(uri, {
 
 let database;
 let playersCollection;
+let seasonsCollection;
 
 // Connect to MongoDB once and reuse the client
 async function connectToMongoDB() {
@@ -34,6 +35,9 @@ async function connectToMongoDB() {
         database = client.db('Cluster-1');
         playersCollection = database.collection('players');
         app.locals.playersCollection = playersCollection;
+
+        seasonsCollection = database.collection('seasons');
+        app.locals.seasonsCollection = seasonsCollection;
 
         console.log("Connected to MongoDB!");
 
@@ -53,8 +57,8 @@ app.use('/api', playerRoutes);
 // Use cron job for stats updates only (e.g., once a day at midnight)
 cron.schedule('0 0 * * *', async () => { 
     console.log('Running daily player stats update...');
-    const fetchAndStorePlayers = require('./scripts/fetchPlayers');  // Import fetchAndStorePlayers only when needed
-    await fetchAndStorePlayers(playersCollection);
+    const fetchAndStorePlayers = require('./scripts/fetchPlayers');
+    await fetchAndStorePlayers(playersCollection, seasonsCollection);
 });
 
 connectToMongoDB();  // Only connect to MongoDB, no fetching players on startup
