@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './Players.css'
 
 function Players() {
   const [players, setPlayers] = useState([]);
@@ -24,15 +25,19 @@ function Players() {
   };
 
   return (
-    <div>
+    <div className='list-container'>
       <h1>Player List</h1>
-      <ul>
+      <div className="player-grid">
         {players.map(player => (
-          <li key={player._id} onClick={() => handlePlayerClick(player._id)}>
+          <div 
+            key={player._id} 
+            className="player-item"
+            onClick={() => handlePlayerClick(player._id)}
+          >
             {player.full_name}
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
