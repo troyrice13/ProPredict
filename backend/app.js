@@ -3,8 +3,8 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const path = require('path');
-const fetchAndStorePlayers = require('./scripts/fetchPlayers');
-const playerRoutes = require('./routes/players');
+const cron = require('node-cron');  // Add cron for scheduling tasks
+const playerRoutes = require('./routes/players');  // No need for fetchAndStorePlayers here
 
 dotenv.config();
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
@@ -50,6 +50,11 @@ async function connectToMongoDB() {
 // Use routes
 app.use('/api', playerRoutes);
 
-connectToMongoDB().then(() => {
-    fetchAndStorePlayers(playersCollection); // Fetch and store players on server start
+// Use cron job for stats updates only (e.g., once a day at midnight)
+cron.schedule('0 0 * * *', async () => { 
+    console.log('Running daily player stats update...');
+    const fetchAndStorePlayers = require('./scripts/fetchPlayers');  // Import fetchAndStorePlayers only when needed
+    await fetchAndStorePlayers(playersCollection);
 });
+
+connectToMongoDB();  // Only connect to MongoDB, no fetching players on startup
