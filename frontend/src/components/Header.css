@@ -1,0 +1,14 @@
+.container {
+    display: flex;
+    justify-content: flex-end;
+    border-bottom: solid;
+}
+
+h2 {
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+h2:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}

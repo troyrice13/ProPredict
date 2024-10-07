@@ -40,7 +40,7 @@ export default function Stats() {
             <h1>Player Stats</h1>
             {playerInfo ? (
                 <div>
-                    <h2>{playerInfo.full_name || 'N/A'}</h2>
+                    <h2>{playerInfo.full_name || 'N/A'} ({playerId})</h2>
                     <p>Team: {teamInfo.name || 'N/A'}</p>
                     <p>Position: {playerInfo.primary_position || 'N/A'}</p>
                     <p>Height: {playerInfo.height ? `${playerInfo.height} inches` : 'N/A'}</p>

@@ -5,14 +5,18 @@ import viteLogo from '/vite.svg'
 import './App.css';
 import Stats from './pages/Stats';
 import Players from './pages/Players';
+import Header from './components/Header';
 
 function App() {
 
   return (
+    <>
+    <Header />
     <Routes>
       <Route path="/stats/:id" element={<Stats />} />
       <Route path="/players/*" element={<Players />} />
     </Routes>
+    </>
   )
 }
 
