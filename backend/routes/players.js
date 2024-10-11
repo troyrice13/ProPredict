@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-// Route to get all players (just id and full_name)
+
 router.get('/players', async (req, res) => {
     const playersCollection = req.app.locals.playersCollection;
     try {
@@ -13,7 +13,7 @@ router.get('/players', async (req, res) => {
     }
 });
 
-// Route to get a specific player by ID with their stats
+
 router.get('/player/:id', async (req, res) => {
     const playerId = req.params.id;
     const playersCollection = req.app.locals.playersCollection;

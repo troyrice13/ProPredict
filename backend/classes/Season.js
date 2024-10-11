@@ -2,7 +2,7 @@ class Season {
     constructor(seasonData) {
         this.playerId = seasonData.playerId;
         this.year = seasonData.year;
-        this.type = seasonData.type; // e.g., 'REG' for regular season
+        this.type = seasonData.type;
         this.stats = seasonData.stats || {};
         this.lastUpdated = seasonData.lastUpdated || new Date();
     }

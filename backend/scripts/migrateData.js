@@ -27,7 +27,7 @@ async function migrateData() {
         for (const player of players) {
             const playerInfo = player.stats?.player || {};
 
-            // Extract basic player info for the new players collection
+
             const newPlayerData = {
                 _id: playerInfo.id || player._id,
                 full_name: playerInfo.full_name || player.full_name,
@@ -49,14 +49,13 @@ async function migrateData() {
                 updated: playerInfo.updated
             };
 
-            // Insert into new players collection
+           
             await newPlayersCollection.updateOne(
                 { _id: newPlayerData._id },
                 { $set: newPlayerData },
                 { upsert: true }
             );
 
-            // Extract season data
             if (playerInfo.seasons && Array.isArray(playerInfo.seasons)) {
                 for (const season of playerInfo.seasons) {
                     const seasonData = {
@@ -67,7 +66,7 @@ async function migrateData() {
                         lastUpdated: new Date()
                     };
 
-                    // Insert into seasons collection
+
                     await seasonsCollection.updateOne(
                         { playerId: seasonData.playerId, year: seasonData.year, type: seasonData.type },
                         { $set: seasonData },
@@ -81,7 +80,6 @@ async function migrateData() {
 
         console.log('Migration completed successfully');
 
-        // Rename collections
         console.log('Renaming collections...');
         await db.collection('players').rename('old_players');
         await db.collection('new_players').rename('players');

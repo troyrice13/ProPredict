@@ -18,19 +18,17 @@ async function renameCollections() {
 
         console.log('Renaming collections...');
         
-        // Check if 'old_players' collection already exists
         const collections = await db.listCollections().toArray();
         const oldPlayersExists = collections.some(col => col.name === 'old_players');
 
         if (!oldPlayersExists) {
-            // Rename 'players' to 'old_players' only if 'old_players' doesn't exist
+   
             await db.collection('players').rename('old_players');
             console.log("Renamed 'players' to 'old_players'");
         } else {
             console.log("'old_players' collection already exists, skipping rename");
         }
 
-        // Rename 'new_players' to 'players'
         await db.collection('new_players').rename('players');
         console.log("Renamed 'new_players' to 'players'");
 

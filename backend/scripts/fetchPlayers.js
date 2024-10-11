@@ -9,22 +9,21 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const apiKey = process.env.SPORTRADAR_API_KEY;
 
-// Retry function to handle rate limits or temporary failures
 async function fetchDataWithRetry(url, retries = 5, backoff = 3000) {
     try {
         return await axios.get(url);
     } catch (error) {
         if (error.response && error.response.status === 429 && retries > 0) {
             console.log(`Rate limit exceeded. Retrying in ${backoff / 1000} seconds...`);
-            await new Promise(resolve => setTimeout(resolve, backoff));  // Wait for the backoff time before retrying
-            return fetchDataWithRetry(url, retries - 1, backoff * 2);  // Exponentially increase backoff time
+            await new Promise(resolve => setTimeout(resolve, backoff));
+            return fetchDataWithRetry(url, retries - 1, backoff * 2);  
         } else {
-            throw error;  // If no retries left or a different error, throw it
+            throw error;
         }
     }
 }
 
-// Fetch and store stats for all players, but don't fetch player list again
+
 async function fetchAndStorePlayers(playersCollection, seasonsCollection) {
     try {
         const players = await playersCollection.find({}).toArray();
